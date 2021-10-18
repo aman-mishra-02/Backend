@@ -9,11 +9,12 @@ db.once("open", () => {
   console.log("Database Connected");
 });
 
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   first: String,
   last: String,
-  address: [
+  addresses: [
     {
+      _id: { id: false },
       street: String,
       city: String,
       state: String,
@@ -29,16 +30,26 @@ const makeUser = async () => {
     first: "Harry",
     last: "Potter",
   });
-  u.address.push({
+  u.addresses.push({
     street: "123 Sesame St.",
     city: "New York",
     state: "NY",
     country: "USA",
   });
-
   const res = await u.save();
-
   console.log(res);
 };
 
-makeUser();
+const addAddress = async (id) => {
+  const user = await User.findById(id);
+  user.addresses.push({
+    street: "99 3rd St.",
+    city: "New York",
+    state: "NY",
+    country: "USA",
+  });
+  const res = await user.save();
+  console.log(res);
+};
+
+addAddress("616d44f38d4d23941adc641c");
